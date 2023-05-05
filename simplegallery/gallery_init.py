@@ -5,6 +5,7 @@ import sys
 import glob
 import shutil
 import json
+
 from distutils.dir_util import copy_tree
 import simplegallery.common as spg_common
 import simplegallery.logic.gallery_logic as gallery_logic
@@ -27,6 +28,23 @@ def parse_args():
         nargs="?",
         default="",
         help="Link to a remote shared album (OneDrive or Google Photos supported)",
+    )
+
+    parser.add_argument(
+        "-r",
+        "--resources-path",
+        dest="resources_path",
+        action="store",
+        default=importlib.resources.files("simplegallery") / "data/public",
+        help="Path to common data (css, fonts, js)",
+    )
+    parser.add_argument(
+        "-t",
+        "--templates-path",
+        dest="templates_path",
+        action="store",
+        default=importlib.resources.files("simplegallery") / "data/templates",
+        help="Path to jinja templates",
     )
 
     parser.add_argument(
@@ -107,7 +125,9 @@ def check_if_gallery_already_exists(gallery_root):
     return False
 
 
-def create_gallery_folder_structure(gallery_root, image_source):
+def create_gallery_folder_structure(
+    gallery_root, image_source, resources_path, templates_path
+):
     """
     Creates the gallery folder structure by copying all the gallery templates and moving all images and videos to the
     photos subfolder
@@ -117,11 +137,11 @@ def create_gallery_folder_structure(gallery_root, image_source):
     # Copy the public and templates folder
     spg_common.log("Copying gallery template files...")
     copy_tree(
-        importlib.resources.files("simplegallery") / "data/templates",
+        templates_path,
         os.path.join(gallery_root, "templates"),
     )
     copy_tree(
-        importlib.resources.files("simplegallery") / "data/public",
+        resources_path,
         os.path.join(gallery_root, "public"),
     )
 

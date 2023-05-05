@@ -298,7 +298,12 @@ def main():
 
     # Copy the template files to the gallery root
     try:
-        create_gallery_folder_structure(gallery_root, image_source)
+        create_gallery_folder_structure(
+            gallery_root,
+            image_source,
+            resources_path=args.resources_path,
+            templates_path=args.templates_path,
+        )
     except Exception as exception:
         spg_common.log(
             f"Something went wrong while generating the gallery structure: {str(exception)}"
